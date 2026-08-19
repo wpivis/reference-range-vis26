@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Platelet Count (PLT)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .viz-frame {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 16px;
+            overflow: hidden;
+        }
+
+        #vis0 {
+            width: 900px;
+            height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            transform-origin: center center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 900px;
+            border: 1px solid #ccc;
+            table-layout: fixed;
+        }
+
+        thead tr {
+            background: #2e3470;
+            color: #fff;
+        }
+
+        th {
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+
+        th:first-child,
+        td:first-child {
+            text-align: left;
+        }
+
+        td {
+            padding: 14px;
+            font-size: 13px;
+            text-align: center;
+            border-right: 1px solid #ccc;
+            color: #000;
+        }
+
+        tbody tr {
+            border-top: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<div class="viz-frame">
+    <div id="vis0">
+        <div id="container"></div>
+        <script>
+          const data = [{ test: "Platelet Count (PLT)", result: 25, range: "150 - 400", units: "x10\u2079/L" }];
+
+          const table = d3.select("#container").append("table");
+          const thead = table.append("thead").append("tr");
+          ["Test","Your Result","Standard Range","Units"].forEach(h => thead.append("th").text(h));
+
+          const tbody = table.append("tbody");
+          data.forEach(d => {
+            const tr = tbody.append("tr");
+            tr.append("td").text(d.test);
+            tr.append("td").text(d.result);
+            tr.append("td").text(d.range);
+            tr.append("td").html("x10<sup>9</sup>/L");
+          });
+
+          function resizeTable() {
+            const vis = document.getElementById("vis0");
+
+            const baseWidth = 900;
+            const baseHeight = 220;
+            const padding = 32;
+
+            const availableWidth = window.innerWidth - padding;
+            const availableHeight = window.innerHeight - padding;
+
+            const scaleX = availableWidth / baseWidth;
+            const scaleY = availableHeight / baseHeight;
+            const scale = Math.min(scaleX, scaleY, 1);
+
+            vis.style.transform = `scale(${scale})`;
+          }
+
+          window.addEventListener("resize", resizeTable);
+          resizeTable();
+        </script>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+name: Deploy To GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  deploy-main:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    if: ${{ github.ref == 'refs/heads/main' }}
+    env:
+      VITE_STORAGE_ENGINE: ${{ secrets.VITE_STORAGE_ENGINE }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: 'yarn'
+
+      - run: yarn install --immutable
+
+      - name: Build with .env file
+        if: ${{ env.VITE_STORAGE_ENGINE == '' }}
+        run: VITE_BASE_PATH=$VITE_BASE_PATH yarn build
+        env:
+          VITE_BASE_PATH: "/zikmund-fisher-replicated-study/"
+
+      - name: Build with GitHub secret
+        if: ${{ env.VITE_STORAGE_ENGINE != '' }}
+        run: VITE_STORAGE_ENGINE=$VITE_STORAGE_ENGINE VITE_BASE_PATH=$VITE_BASE_PATH yarn build
+        env:
+          VITE_BASE_PATH: "/zikmund-fisher-replicated-study/"
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+
+  pr-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    if: ${{ github.event_name == 'pull_request' }}
+    env:
+      VITE_STORAGE_ENGINE: ${{ secrets.VITE_STORAGE_ENGINE }}
+
+    steps:
+      - name: Comment on PR
+        uses: hasura/comment-progress@v2.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          number: ${{ github.event.number }}
+          id: deploy-preview
+          message: "Starting deployment of preview ⏳..."
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: 'yarn'
+
+      - run: yarn install --immutable
+
+      - name: Build PR preview with .env file
+        if: ${{ env.VITE_STORAGE_ENGINE == '' }}
+        run: VITE_BASE_PATH=$VITE_BASE_PATH yarn build
+        env:
+          VITE_BASE_PATH: "/study/PR${{ github.event.number }}/"
+
+      - name: Build PR preview with GitHub secret
+        if: ${{ env.VITE_STORAGE_ENGINE != '' }}
+        run: VITE_STORAGE_ENGINE=$VITE_STORAGE_ENGINE VITE_BASE_PATH=$VITE_BASE_PATH yarn build
+        env:
+          VITE_BASE_PATH: "/study/PR${{ github.event.number }}/"
+
+      - name: Push PR deploy preview
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          destination_dir: "PR${{ github.event.number }}"
+
+      - name: Update comment
+        uses: hasura/comment-progress@v2.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          number: ${{ github.event.number }}
+          id: deploy-preview
+          message: "A preview of ${{ github.event.after }} is uploaded and can be seen here:\n\n ✨ https://revisit.dev/study/PR${{ github.event.number }} ✨\n\nChanges may take a few minutes to propagate."

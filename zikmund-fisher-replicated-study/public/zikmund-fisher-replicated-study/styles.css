@@ -1,0 +1,36 @@
+.response [class*="markLabel"] {
+    white-space: pre-line !important;
+    position: absolute !important;
+    left: 50%;
+    transform: translateX(-50%) !important;
+
+    text-align: center !important;
+    line-height: 1.15 !important;
+
+    width: max-content !important;
+    max-width: 90px !important;
+
+    font-size: 0.75rem !important;
+    margin-top: 8px !important;
+}
+
+.response {
+    margin-bottom: 4rem !important;
+}
+
+.response p {
+    font-size: 1rem !important;
+    font-weight: normal !important;
+}
+
+.response + .response {
+    margin-top: 0;
+}
+
+.response {
+    margin-bottom: 4rem !important;
+}
+
+.responseBlock {
+    padding-top: 3rem !important;
+}
