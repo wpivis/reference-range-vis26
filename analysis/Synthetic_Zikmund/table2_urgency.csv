@@ -1,0 +1,13 @@
+Test,Display Format,Near-Normal Mean(SD),Extreme Mean(SD),Within-Subject Diff Mean(SD),Difference Equals 0 (%)
+Platelet Count,Table,3.21 (1.50),2.22 (1.37),-0.99 (2.16),5.9
+Platelet Count,Simple Line,2.63 (1.62),2.86 (1.60),0.23 (2.20),9.4
+Platelet Count,Blocks Line,2.66 (1.68),2.09 (1.51),-0.57 (2.33),4.0
+Platelet Count,Gradient Line,2.32 (1.60),2.51 (1.68),0.20 (2.38),8.7
+ALT,Table,2.47 (1.48),2.38 (1.69),-0.09 (2.57),5.9
+ALT,Simple Line,2.65 (1.74),2.29 (1.45),-0.36 (2.26),7.5
+ALT,Blocks Line,2.60 (1.52),2.80 (1.65),0.20 (2.22),8.0
+ALT,Gradient Line,2.65 (1.52),2.20 (1.58),-0.46 (2.26),13.0
+Serum Creatinine,Table,2.25 (1.59),2.57 (1.52),0.31 (1.98),7.8
+Serum Creatinine,Simple Line,2.80 (1.46),2.60 (1.71),-0.20 (2.20),5.7
+Serum Creatinine,Blocks Line,2.52 (1.70),2.40 (1.53),-0.12 (2.27),8.0
+Serum Creatinine,Gradient Line,2.82 (1.47),2.62 (1.73),-0.20 (2.17),10.9
